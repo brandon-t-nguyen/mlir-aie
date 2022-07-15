@@ -216,6 +216,9 @@ ParseResult SRSOp::parse(OpAsmParser &parser, OperationState &result) {
   return parser.addTypeToList(vectorType, result.types);
 }
 
+// SRSOp interfaces
+bool SRSOp::readsFromAccumulator() { return true; }
+
 //===----------------------------------------------------------------------===//
 // UPSOp
 //===----------------------------------------------------------------------===//
@@ -301,6 +304,9 @@ ParseResult UPSOp::parse(OpAsmParser &parser, OperationState &result) {
 
   return parser.addTypeToList(accType, result.types);
 }
+
+// UPSOp interfaces
+bool UPSOp::writesToAccumulator() { return true; }
 
 //===----------------------------------------------------------------------===//
 // MulOp and FMAOp
@@ -493,6 +499,22 @@ ParseResult MulOp::parse(OpAsmParser &parser, OperationState &result) {
 
 ParseResult FMAOp::parse(OpAsmParser &parser, OperationState &result) {
   return parseMulFMAOp(parser, result, true);
+}
+
+// MulOp and FMAOp interfaces
+bool MulOp::writesToAccumulator() {
+  auto resultElType = result().getType().cast<VectorType>().getElementType();
+  return resultElType.isa<IntegerType>();
+}
+
+bool FMAOp::writesToAccumulator() {
+  auto resultElType = result().getType().cast<VectorType>().getElementType();
+  return resultElType.isa<IntegerType>();
+}
+
+bool FMAOp::readsFromAccumulator() {
+  auto resultElType = result().getType().cast<VectorType>().getElementType();
+  return resultElType.isa<IntegerType>();
 }
 
 //===----------------------------------------------------------------------===//

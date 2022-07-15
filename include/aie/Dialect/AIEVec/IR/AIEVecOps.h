@@ -15,6 +15,7 @@
 
 #include "AIEVecDialect.h"
 #include "mlir/Interfaces/SideEffectInterfaces.h"
+#include "aie/AIEVecInterfaces.h"
 
 #define GET_OP_CLASSES
 #include "aie/Dialect/AIEVec/IR/AIEVecOps.h.inc"

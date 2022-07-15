@@ -18,6 +18,11 @@ mlir_tablegen(AIEInterfaces.h.inc -gen-op-interface-decls)
 mlir_tablegen(AIEInterfaces.cpp.inc -gen-op-interface-defs)
 add_public_tablegen_target(MLIRAIEInterfacesIncGen)
 
+set(LLVM_TARGET_DEFINITIONS AIEVecInterfaces.td)
+mlir_tablegen(AIEVecInterfaces.h.inc -gen-op-interface-decls)
+mlir_tablegen(AIEVecInterfaces.cpp.inc -gen-op-interface-defs)
+add_public_tablegen_target(MLIRAIEVecInterfacesIncGen)
+
 set(LLVM_TARGET_DEFINITIONS AIEPasses.td)
 mlir_tablegen(AIEPasses.h.inc -gen-pass-decls -name AIE)
 add_public_tablegen_target(MLIRAIEPassIncGen)

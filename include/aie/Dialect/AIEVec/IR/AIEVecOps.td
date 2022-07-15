@@ -14,6 +14,7 @@
 #define AIEVEC_OPS
 
 include "aie/Dialect/AIEVec/IR/AIEVecTypes.td"
+include "aie/AIEVecInterfaces.td"
 include "mlir/Interfaces/SideEffectInterfaces.td"
 
 // Base class for AIE dialect ops.
@@ -115,7 +116,9 @@ def AIEVec_SubOp:
 
 def AIEVec_FMAOp :
   AIEVec_Op<"mac", [
-    NoSideEffect
+    NoSideEffect,
+    DeclareOpInterfaceMethods<AccumulatorOpInterface,
+        ["writesToAccumulator", "readsFromAccumulator"]>
   ]>,
   Arguments<(ins AnyVector:$lhs, AnyVector:$rhs, AnyVector:$acc,
                DefaultValuedStrAttr<StrAttr, "">:$xstart,
@@ -186,7 +189,8 @@ def AIEVec_FMAOp :
 
 def AIEVec_MulOp:
   AIEVec_Op<"mul", [
-    NoSideEffect
+    NoSideEffect,
+    DeclareOpInterfaceMethods<AccumulatorOpInterface, ["writesToAccumulator"]>
   ]>,
   Arguments<(ins AnyVector:$lhs, AnyVector:$rhs,
                DefaultValuedStrAttr<StrAttr, "">:$xstart,
@@ -250,7 +254,8 @@ def AIEVec_MulOp:
 
 def AIEVec_UPSOp:
   AIEVec_Op<"ups", [
-    NoSideEffect
+    NoSideEffect,
+    DeclareOpInterfaceMethods<AccumulatorOpInterface, ["writesToAccumulator"]>
   ]>, 
   Arguments<(ins AnyVector:$source, 
           DefaultValuedAttr<Confined<I8Attr, [IntNonNegative]>, "0">:$shift)>,
@@ -270,7 +275,8 @@ def AIEVec_UPSOp:
 
 def AIEVec_SRSOp:
   AIEVec_Op<"srs", [
-    NoSideEffect
+    NoSideEffect,
+    DeclareOpInterfaceMethods<AccumulatorOpInterface, ["readsFromAccumulator"]>
   ]>, 
   Arguments<(ins AnyVector:$source,
           DefaultValuedAttr<Confined<I8Attr, [IntNonNegative]>, "0">:$shift)>,
