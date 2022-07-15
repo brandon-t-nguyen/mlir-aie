@@ -327,25 +327,11 @@ static bool isWellFormedVectorOp(Operation *Op) {
   return true;
 }
 
-// Given an AIEOp, determines if an operation writes to an accumulator
-// based on operation type and operand types
+// Determines if an operation writes to an accumulator
 static bool writesToAccumulator(Operation *op) {
-  // Integer muls and FMAs write to accumulator
-  if (!isAIEOp(op)) {
-    return false;
-  } else if (isa<aievec::MulOp>(op)) {
-    auto mulOp = dyn_cast<aievec::MulOp>(op);
-    auto lhsType = mulOp.lhs().getType().cast<VectorType>().getElementType();
-    auto rhsType = mulOp.rhs().getType().cast<VectorType>().getElementType();
-    return !lhsType.isa<FloatType>() && !rhsType.isa<FloatType>();
-  } else if (isa<aievec::FMAOp>(op)) {
-    auto fmaOp = dyn_cast<aievec::FMAOp>(op);
-    auto lhsType = fmaOp.lhs().getType().cast<VectorType>().getElementType();
-    auto rhsType = fmaOp.rhs().getType().cast<VectorType>().getElementType();
-    return !lhsType.isa<FloatType>() && !rhsType.isa<FloatType>();
-  } else if (isa<aievec::UPSOp>(op))
-    return true;
-  else
+  if (auto accOp = dyn_cast<aievec::AccumulatorOpInterface>(op)) {
+    return accOp.writesToAccumulator();
+  } else
     return false;
 }
 
