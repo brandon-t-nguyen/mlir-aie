@@ -44,6 +44,18 @@ def AccumulatorOpInterface : OpInterface<"AccumulatorOpInterface"> {
         return false;
       }]
     >,
+    InterfaceMethod<
+      /*desc=*/[{
+        Returns operands that do read from an accumulator.
+      }],
+      /*retTy=*/"bool",
+      /*methodName=*/"getAccumulatorOperands",
+      /*args*/(ins),
+      /*methodBody=*/"",
+      /*defaultImplementation=*/[{
+        return false;
+      }]
+    >,
   ];
 }
 #endif // AIE_AIEVECINTERFACES

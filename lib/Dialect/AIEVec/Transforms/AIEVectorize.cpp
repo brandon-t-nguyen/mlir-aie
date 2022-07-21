@@ -335,6 +335,14 @@ static bool writesToAccumulator(Operation *op) {
     return false;
 }
 
+// Determines if an operation writes to an accumulator
+static bool readsFromAccumulator(Operation *op) {
+  if (auto accOp = dyn_cast<aievec::AccumulatorOpInterface>(op)) {
+    return accOp.readsFromAccumulator();
+  } else
+    return false;
+}
+
 //===----------------------------------------------------------------------===//
 // Manipulate affine expressions
 //===----------------------------------------------------------------------===//
@@ -1983,8 +1991,8 @@ static void insertSRSOp(Operation *Op, VectState *state) {
   // Iterate over all the users of this operation that are not in AIE dialect,
   // and replace the use of Op in them with srsOp
   for (auto user : Op->getUsers()) {
-    // Skip AIE ops
-    if (isAIEOp(user))
+    // Skip ops that read from the accumulator TODO: mixed multiple operands?
+    if (readsFromAccumulator(user))
       continue;
 
     // Get the underlying scalar element type of user op. If the user is a
@@ -2018,8 +2026,8 @@ static void insertSRSOp(Operation *Op, VectState *state) {
   }
 }
 
-// Generate SRS op whenever we move data from an accumulator AIE dialect to a
-// vector.
+// Generate SRS op whenever an op writes to an accumulator but a user
+// does not read from an accumulator
 static void insertSRSOpsInFunc(func::FuncOp func, VectState *state) {
   func.walk([&](mlir::Operation *op) {
     // Insert an SRS op if the op outputs to an accumulator
