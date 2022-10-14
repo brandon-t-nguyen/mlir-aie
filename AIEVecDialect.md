@@ -4,12 +4,6 @@
 Types and operations for AIE vector dialect
 [TOC]
 
-## Type constraint definition
-
-### scalar or vector 48/80 bit accumulator type
-
-
-
 ## Operation definition
 
 ### `aievec.add` (::xilinx::aievec::AddOp)
@@ -113,8 +107,8 @@ AIE vector fused multiply-add
 Xilinx-specific multiply-add operation. It multiplies two 1-D vectors,
 and adds the result to an accumulator. The vector sizes are at least 
 256 bits, and the left operand vector is at least twice the size of 
-right operand vector. The lhs and rhs are 8/16/32 bits; the result
-and acc are 48-bit or 80-bit accumulator. 
+right operand vector. For integers, the lhs and rhs are 8/16/32 bits;
+the result and acc are 48-bit or 80-bit accumulator.
 `$result = `$lhs * $rhs + $acc`.
 Note: the same operator can be used as fmsub operator by setting the 
 'fmsub' bool to true.
@@ -145,13 +139,13 @@ Effects: MemoryEffects::Effect{}
 | :-----: | ----------- |
 | `lhs` | vector of any type values
 | `rhs` | vector of any type values
-| `acc` | scalar or vector 48/80 bit accumulator type
+| `acc` | vector of any type values
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-| `result` | scalar or vector 48/80 bit accumulator type
+| `result` | vector of any type values
 
 ### `aievec.mul` (::xilinx::aievec::MulOp)
 
@@ -159,8 +153,8 @@ AIE vector multiply
 
 Xilinx-specific multiply operation that multiplies two 1-D vectors.
 The vector sizes are at least 256 bits, and the left operand vector 
-is at least twice the size of right operand vector. The lhs and rhs 
-are 8/16/32 bits, and result is a 48-bit or 80-bit accumulator. 
+is at least twice the size of right operand vector. For integers, the
+lhs and rhs are 8/16/32 bits, and result is a 48-bit or 80-bit accumulator.
 `$result = `$lhs * $rhs`.
 
 Interfaces: NoSideEffect (MemoryEffectOpInterface)
@@ -193,7 +187,7 @@ Effects: MemoryEffects::Effect{}
 
 | Result | Description |
 | :----: | ----------- |
-| `result` | scalar or vector 48/80 bit accumulator type
+| `result` | vector of any type values
 
 ### `aievec.pack` (::xilinx::aievec::PackOp)
 
@@ -242,7 +236,7 @@ Effects: MemoryEffects::Effect{}
 
 | Operand | Description |
 | :-----: | ----------- |
-| `source` | scalar or vector 48/80 bit accumulator type
+| `source` | vector of any type values
 
 #### Results:
 
@@ -395,7 +389,7 @@ Effects: MemoryEffects::Effect{}
 
 | Result | Description |
 | :----: | ----------- |
-| `result` | scalar or vector 48/80 bit accumulator type
+| `result` | vector of any type values
 
 ### `aievec.unpack` (::xilinx::aievec::UnpackOp)
 
@@ -420,18 +414,4 @@ Effects: MemoryEffects::Effect{}
 | Result | Description |
 | :----: | ----------- |
 | `result` | vector of any type values
-
-## Type definition
-
-### AccType
-
-scalar or vector 48/80 bit accumulator type
-
-
-#### Parameters:
-
-| Parameter | C++ type | Description |
-| :-------: | :-------: | ----------- |
-| lanes | `int32_t` |  |
-| valueType | `Type` |  |
 
